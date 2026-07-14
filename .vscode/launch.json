@@ -1,0 +1,19 @@
+{
+	"configurations": [
+		{
+			"type": "java",
+			"name": "App",
+			"request": "launch",
+			"mainClass": "com.ansbeno.App",
+			"projectName": "dp_7fd132ac"
+		},
+		{
+			"type": "java",
+			"name": "CodeLens (Launch) - App",
+			"request": "launch",
+			"mainClass": "com.test.maven.App",
+			"console": "internalConsole",
+			"projectName": "my.app"
+		}
+	]
+}
