@@ -165,6 +165,7 @@ A good architect builds complexity incrementally as needed, not all at once.
 3. [Behavioral Patterns](#behavioral-patterns)
     - [Observer](#observer)
     - [Strategy](#strategy)
+    - [Specification](#specification)
 
 ---
 
@@ -1026,17 +1027,164 @@ commuter.commute();  // Output: Transporting by car...
 
 ---
 
+## Specification
+
+### What is it?
+
+The Specification pattern is a behavioral pattern that encapsulates a **business rule or requirement into a reusable object**. Instead of embedding complex filtering logic directly into your code, you create specifications that can be combined, composed, and reused.
+
+A specification is essentially a **predicate** - it answers the question "Does this object meet my criteria?" and returns true or false.
+
+### When to use it?
+
+- **Complex filtering logic** - Finding products by multiple criteria
+- **Reusable business rules** - Rules used in multiple places
+- **Composable conditions** - Need to combine conditions with AND, OR, NOT
+- **Query builders** - Building complex queries dynamically
+- **Validation rules** - Validating objects against business rules
+- **Report generation** - Filtering data for different reports
+
+### Problem it solves
+
+Without Specification, you end up with:
+
+1. **Scattered logic** - Filter conditions spread throughout the codebase
+2. **Rigid filters** - Hard to combine or modify filter criteria
+3. **Duplicate code** - Same business rules repeated in multiple places
+4. **Tight coupling** - Filtering logic mixed with domain objects
+5. **Difficult testing** - Complex filter conditions hard to unit test
+
+### Code Example
+
+The core of the Specification pattern is a simple interface:
+
+```java
+public interface Specification<T> {
+    boolean isSatisfiedBy(T item);
+    
+    default Specification<T> and(Specification<T> other) {
+        return item -> this.isSatisfiedBy(item) && other.isSatisfiedBy(item);
+    }
+    
+    default Specification<T> or(Specification<T> other) {
+        return item -> this.isSatisfiedBy(item) || other.isSatisfiedBy(item);
+    }
+    
+    default Specification<T> not() {
+        return item -> !this.isSatisfiedBy(item);
+    }
+}
+```
+
+Then you create concrete specifications for specific business rules:
+
+```java
+// Specification 1: Items that are in stock
+public class InStockSpecification implements Specification<Product> {
+    public boolean isSatisfiedBy(Product item) {
+        return item.isInStock();
+    }
+}
+
+// Specification 2: Items priced under a certain amount
+public class PriceLessThanSpecification implements Specification<Product> {
+    private double price;
+    
+    public PriceLessThanSpecification(double price) {
+        this.price = price;
+    }
+    
+    public boolean isSatisfiedBy(Product item) {
+        return item.getPrice() < price;
+    }
+}
+
+// Specification 3: Items in a specific category
+public class CategorySpecification implements Specification<Product> {
+    private String category;
+    
+    public CategorySpecification(String category) {
+        this.category = category;
+    }
+    
+    public boolean isSatisfiedBy(Product item) {
+        return item.getCategory().equals(category);
+    }
+}
+```
+
+### Usage
+
+The real power comes from **composing specifications** together:
+
+```java
+// Create individual specifications
+Specification<Product> inStock = new InStockSpecification();
+Specification<Product> cheap = new PriceLessThanSpecification(500);
+Specification<Product> electronics = new CategorySpecification("Electronics");
+
+// Compose them with logical operators
+// Find: (In-stock AND Electronics) OR (Cheap items)
+Specification<Product> complexSpec = inStock.and(electronics).or(cheap);
+
+// Apply the specification
+List<Product> filteredProducts = ProductFilter.filter(products, complexSpec);
+```
+
+The filter is simple:
+
+```java
+public class ProductFilter {
+    public static List<Product> filter(List<Product> products, 
+                                       Specification<Product> spec) {
+        return products.stream()
+            .filter(spec::isSatisfiedBy)
+            .toList();
+    }
+}
+```
+
+### Key Characteristics
+
+- ✓ **Reusable rules** - Specifications are independent and reusable
+- ✓ **Composable** - Combine with `and()`, `or()`, `not()`
+- ✓ **Generic** - `Specification<T>` works with any type
+- ✓ **Readable** - Clear intent of what criteria are being checked
+- ✓ **Testable** - Each specification can be unit tested independently
+- ✓ **Loose coupling** - Domain objects don't know about filtering
+
+### Pros & Cons
+
+| Pros                              | Cons                           |
+| --------------------------------- | ------------------------------ |
+| Reusable business rules           | More classes (one per rule)    |
+| Composable and flexible           | Small overhead from objects    |
+| Easy to test independently        | Overkill for simple filters    |
+| Separates concerns                | Functional approach may be simpler for trivial cases |
+| Clear, readable code              | Learning curve for new developers |
+| Follows Single Responsibility     | Extra abstraction layers       |
+
+### When NOT to use it
+
+- **Simple one-off filters** - Use lambdas or simple methods
+- **SQL queries** - Use database queries directly
+- **Rarely changing rules** - Simpler approaches may suffice
+- **Performance-critical paths** - Objects add overhead vs. direct comparisons
+
+---
+
 ## Summary Table
 
-| Pattern       | Category   | Purpose                           | Key Benefit          |
-| ------------- | ---------- | --------------------------------- | -------------------- |
-| **Singleton** | Creational | One instance globally             | Memory efficient     |
-| **Builder**   | Creational | Flexible object construction      | Clean, readable code |
-| **Factory**   | Creational | Hide concrete classes             | Loose coupling       |
-| **Adapter**   | Structural | Make incompatible interfaces work | Reuse existing code  |
-| **Facade**    | Structural | Simplify complex subsystems       | Easy to use APIs     |
-| **Observer**  | Behavioral | One-to-many notifications         | Event-driven systems |
-| **Strategy**  | Behavioral | Runtime algorithm selection       | No conditionals      |
+| Pattern           | Category   | Purpose                           | Key Benefit          |
+| ----------------- | ---------- | --------------------------------- | -------------------- |
+| **Singleton**     | Creational | One instance globally             | Memory efficient     |
+| **Builder**       | Creational | Flexible object construction      | Clean, readable code |
+| **Factory**       | Creational | Hide concrete classes             | Loose coupling       |
+| **Adapter**       | Structural | Make incompatible interfaces work | Reuse existing code  |
+| **Facade**        | Structural | Simplify complex subsystems       | Easy to use APIs     |
+| **Observer**      | Behavioral | One-to-many notifications         | Event-driven systems |
+| **Strategy**      | Behavioral | Runtime algorithm selection       | No conditionals      |
+| **Specification** | Behavioral | Encapsulate business rules        | Reusable conditions  |
 
 ---
 
@@ -1054,6 +1202,7 @@ commuter.commute();  // Output: Transporting by car...
 - **Facade** - Complex subsystems
 - **Observer** - Automatic notifications
 - **Strategy** - Different algorithms
+- **Specification** - Complex filtering or business rules
 
 ---
 
