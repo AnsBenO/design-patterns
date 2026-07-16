@@ -165,6 +165,7 @@ A good architect builds complexity incrementally as needed, not all at once.
 3. [Behavioral Patterns](#behavioral-patterns)
     - [Observer](#observer)
     - [Strategy](#strategy)
+4. [Domain-Driven Design](#domain-driven-design-ddd)
     - [Specification](#specification)
 
 ---
@@ -1025,7 +1026,7 @@ commuter.commute();  // Output: Transporting by car...
 | Easy to add algorithms | Overkill for simple cases |
 | Follows Open/Closed    | More complex initially    |
 
----
+# Domain-Driven Design (DDD)
 
 ## Specification
 
@@ -1173,7 +1174,7 @@ public class ProductFilter {
 
 ---
 
-## Summary Table
+# Summary
 
 | Pattern           | Category   | Purpose                           | Key Benefit          |
 | ----------------- | ---------- | --------------------------------- | -------------------- |
@@ -1184,7 +1185,7 @@ public class ProductFilter {
 | **Facade**        | Structural | Simplify complex subsystems       | Easy to use APIs     |
 | **Observer**      | Behavioral | One-to-many notifications         | Event-driven systems |
 | **Strategy**      | Behavioral | Runtime algorithm selection       | No conditionals      |
-| **Specification** | Behavioral | Encapsulate business rules        | Reusable conditions  |
+| **Specification** | DDD        | Encapsulate business rules        | Reusable conditions  |
 
 ---
 
