@@ -1,4 +1,4 @@
-package com.ansbeno.behavioral.specification;
+package com.ansbeno.domaindrivendesign.specification;
 
 public interface Specification<T> {
 

@@ -1,4 +1,4 @@
-package com.ansbeno.behavioral.specification;
+package com.ansbeno.domaindrivendesign.specification;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.ansbeno.behavioral.specification;
+package com.ansbeno.domaindrivendesign.specification;
 
 public class PriceLessThanSpecification implements Specification<Product> {
       private double price;

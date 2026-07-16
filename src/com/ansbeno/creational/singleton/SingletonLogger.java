@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * 
  * Key characteristics:
  * - Private constructor prevents instantiation from outside
- * - Static instance created once at class loading
+ * - Static instance
  * - getInstance() provides global access point
  * - Ensures only ONE instance exists throughout application
  * 
@@ -23,16 +23,19 @@ import java.util.stream.Collectors;
  */
 public class SingletonLogger {
 
-      // Static instance created exactly once when class is loaded
-      private static final SingletonLogger instance = new SingletonLogger();
+      // Static instance
+      private static SingletonLogger instance;
 
       // Private constructor prevents direct instantiation
       private SingletonLogger() {
 
       }
 
-      // Static method provides global access to the single instance
+      // Static method provides global access to the instance
       public static SingletonLogger getInstance() {
+            if (instance == null) {
+                  instance = new SingletonLogger();
+            }
             return instance;
       }
 

@@ -320,7 +320,7 @@ public class PersonBuilder {
 }
 ```
 
-**The Product Class:**
+**The Person Class:**
 
 ```java
 public class Person {
@@ -337,7 +337,7 @@ public class Person {
         this.isMarried = builder.isMarried;
     }
 
-    // Factory method returns a new builder
+    // Builder method returns a new builder
     public static PersonBuilder builder() {
         return new PersonBuilder();
     }
@@ -1061,15 +1061,15 @@ The core of the Specification pattern is a simple interface:
 ```java
 public interface Specification<T> {
     boolean isSatisfiedBy(T item);
-    
+
     default Specification<T> and(Specification<T> other) {
         return item -> this.isSatisfiedBy(item) && other.isSatisfiedBy(item);
     }
-    
+
     default Specification<T> or(Specification<T> other) {
         return item -> this.isSatisfiedBy(item) || other.isSatisfiedBy(item);
     }
-    
+
     default Specification<T> not() {
         return item -> !this.isSatisfiedBy(item);
     }
@@ -1089,11 +1089,11 @@ public class InStockSpecification implements Specification<Product> {
 // Specification 2: Items priced under a certain amount
 public class PriceLessThanSpecification implements Specification<Product> {
     private double price;
-    
+
     public PriceLessThanSpecification(double price) {
         this.price = price;
     }
-    
+
     public boolean isSatisfiedBy(Product item) {
         return item.getPrice() < price;
     }
@@ -1102,11 +1102,11 @@ public class PriceLessThanSpecification implements Specification<Product> {
 // Specification 3: Items in a specific category
 public class CategorySpecification implements Specification<Product> {
     private String category;
-    
+
     public CategorySpecification(String category) {
         this.category = category;
     }
-    
+
     public boolean isSatisfiedBy(Product item) {
         return item.getCategory().equals(category);
     }
@@ -1135,7 +1135,7 @@ The filter is simple:
 
 ```java
 public class ProductFilter {
-    public static List<Product> filter(List<Product> products, 
+    public static List<Product> filter(List<Product> products,
                                        Specification<Product> spec) {
         return products.stream()
             .filter(spec::isSatisfiedBy)
@@ -1155,14 +1155,14 @@ public class ProductFilter {
 
 ### Pros & Cons
 
-| Pros                              | Cons                           |
-| --------------------------------- | ------------------------------ |
-| Reusable business rules           | More classes (one per rule)    |
-| Composable and flexible           | Small overhead from objects    |
-| Easy to test independently        | Overkill for simple filters    |
-| Separates concerns                | Functional approach may be simpler for trivial cases |
-| Clear, readable code              | Learning curve for new developers |
-| Follows Single Responsibility     | Extra abstraction layers       |
+| Pros                          | Cons                                                 |
+| ----------------------------- | ---------------------------------------------------- |
+| Reusable business rules       | More classes (one per rule)                          |
+| Composable and flexible       | Small overhead from objects                          |
+| Easy to test independently    | Overkill for simple filters                          |
+| Separates concerns            | Functional approach may be simpler for trivial cases |
+| Clear, readable code          | Learning curve for new developers                    |
+| Follows Single Responsibility | Extra abstraction layers                             |
 
 ### When NOT to use it
 
